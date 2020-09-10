@@ -1,0 +1,2 @@
+/subsystem=keycloak-server/spi=eventsListener/provider=mailchimp:write-attribute(name=properties.API_KEY,value="SOME_API_KEY")
+/subsystem=keycloak-server/spi=eventsListener/provider=mailchimp:write-attribute(name=properties.LIST_ID,value="SOME_LIST_ID")
