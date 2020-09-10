@@ -6,12 +6,12 @@
 
     <groupId>com.bayamsell.keycloak</groupId>
     <artifactId>keycloak-mailchimp</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.0</version>
 
     <properties>
         <java.version>11</java.version>
         <lombock.version>1.18.10</lombock.version>
-        <keycloak.version>11.0.1</keycloak.version>
+        <keycloak.version>11.0.2</keycloak.version>
     </properties>
 
     <dependencyManagement>
