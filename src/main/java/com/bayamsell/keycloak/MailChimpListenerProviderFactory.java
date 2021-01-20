@@ -1,5 +1,6 @@
 package com.bayamsell.keycloak;
 
+import org.apache.commons.lang.StringUtils;
 import org.keycloak.Config;
 import org.keycloak.events.EventListenerProviderFactory;
 import org.keycloak.events.EventType;
@@ -7,18 +8,20 @@ import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.KeycloakSessionFactory;
 import org.keycloak.provider.ServerInfoAwareProviderFactory;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class MailChimpListenerProviderFactory implements EventListenerProviderFactory, ServerInfoAwareProviderFactory {
 
     private static final String ID = "mailchimp";
+    private static final LinkedHashMap<String, String> SPI_INFO = new LinkedHashMap<>();
+
+    static {
+        SPI_INFO.put("provider_id", ID);
+        SPI_INFO.put("mailchimp-bys-v", "1.0.1");
+    }
+
     private String API_KEY;
     private String LIST_ID;
     private Collection<EventType> listenedEvents;
@@ -31,10 +34,16 @@ public class MailChimpListenerProviderFactory implements EventListenerProviderFa
     @Override
     public void init(Config.Scope config) {
         String cKey = config.get("API_KEY");
-        API_KEY = Objects.requireNonNull(cKey);
+        API_KEY = StringUtils.trimToEmpty(cKey);
+        if (StringUtils.isBlank(API_KEY)) {
+            throw new IllegalArgumentException("API_KEY cannot be empty");
+        }
 
         String cList = config.get("LIST_ID");
-        LIST_ID = Objects.requireNonNull(cList);
+        LIST_ID = StringUtils.trimToEmpty(cList);
+        if (StringUtils.isBlank(LIST_ID)) {
+            throw new IllegalArgumentException("LIST_ID cannot be empty");
+        }
 
         String[] listenedEventLists = config.getArray("LISTENED_EVENT_LIST");
         if (listenedEventLists != null) {
@@ -61,10 +70,6 @@ public class MailChimpListenerProviderFactory implements EventListenerProviderFa
 
     @Override
     public Map<String, String> getOperationalInfo() {
-        Map<String, String> ret = new LinkedHashMap<>();
-        ret.put("provider_id", ID);
-        ret.put("mailchimp-bys-v", "0.0.1");
-        ret.put("api-key", "is set in config or in java code");
-        return ret;
+        return SPI_INFO;
     }
 }
