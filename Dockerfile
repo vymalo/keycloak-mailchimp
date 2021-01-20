@@ -2,12 +2,10 @@ ARG TAG=latest
 
 FROM jboss/keycloak:${TAG}
 
-ENV BANANA_J_VERSION=0.6.3
-
 ENV MAILCHIMP_API_KEY someApiKey
 ENV MAILCHIMP_API_KEY someApiKey
 
-ENV MAILCHIMP_PLUGIN_VERSION 1.0.0
+ENV MAILCHIMP_PLUGIN_VERSION 1.0.1
 
 LABEL maintainer="Stephane, Segning Lambou <selastlambou@gmail.com>"
 
