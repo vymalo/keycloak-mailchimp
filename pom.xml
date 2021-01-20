@@ -10,8 +10,7 @@
 
     <properties>
         <java.version>11</java.version>
-        <lombock.version>1.18.10</lombock.version>
-        <keycloak.version>11.0.2</keycloak.version>
+        <keycloak.version>12.0.2</keycloak.version>
     </properties>
 
     <dependencyManagement>
@@ -74,13 +73,6 @@
                     <release>${java.version}</release>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
-                    <annotationProcessorPaths>
-                        <path>
-                            <groupId>org.projectlombok</groupId>
-                            <artifactId>lombok</artifactId>
-                            <version>${lombock.version}</version>
-                        </path>
-                    </annotationProcessorPaths>
                 </configuration>
             </plugin>
 
