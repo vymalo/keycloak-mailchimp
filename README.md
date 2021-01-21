@@ -13,7 +13,7 @@ A. First way
             <properties>
                 <property name="API_KEY" value="api-key"/>
                 <property name="LIST_ID" value="api-value"/>
-                <!-- (optionally: list of events) <property name="LISTENED_EVENT_LIST" value="[LOGIN,REGISTER,LOGOUT]"/> -->
+                <!-- (optionally: list of events) <property name="LISTENED_EVENT_LIST" value="[&quot;LOGIN&quot;,&quot;REGISTER&quot;,&quot;LOGOUT&quot;]"/> -->
             </properties>
         </provider>
     </spi>

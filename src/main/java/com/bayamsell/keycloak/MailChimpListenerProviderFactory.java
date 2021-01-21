@@ -47,9 +47,12 @@ public class MailChimpListenerProviderFactory implements EventListenerProviderFa
 
         String[] listenedEventLists = config.getArray("LISTENED_EVENT_LIST");
         if (listenedEventLists != null && listenedEventLists.length > 0) {
-            List<String> listenedEvents = Arrays.asList(listenedEventLists);
-            Stream<EventType> eventTypeStream = listenedEvents.stream().map(EventType::valueOf);
-            this.listenedEvents = eventTypeStream.collect(Collectors.toList());
+            this.listenedEvents = Arrays.stream(listenedEventLists)
+                    .parallel()
+                    .map(String::trim)
+                    .filter(StringUtils::isNotBlank)
+                    .map(EventType::valueOf)
+                    .collect(Collectors.toList());
         } else {
             listenedEvents = Arrays.asList(EventType.LOGIN, EventType.REGISTER);
         }
