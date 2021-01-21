@@ -5,7 +5,7 @@ FROM jboss/keycloak:${TAG}
 ENV MAILCHIMP_API_KEY someApiKey
 ENV MAILCHIMP_API_KEY someApiKey
 
-ENV MAILCHIMP_PLUGIN_VERSION 1.0.1
+ENV MAILCHIMP_PLUGIN_VERSION 1.0.2
 
 LABEL maintainer="Stephane, Segning Lambou <selastlambou@gmail.com>"
 
