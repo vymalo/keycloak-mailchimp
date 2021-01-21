@@ -19,7 +19,7 @@ public class MailChimpListenerProviderFactory implements EventListenerProviderFa
 
     static {
         SPI_INFO.put("provider_id", ID);
-        SPI_INFO.put("mailchimp-bys-v", "1.0.1");
+        SPI_INFO.put("mailchimp-bys-v", "1.0.2");
     }
 
     private String API_KEY;
