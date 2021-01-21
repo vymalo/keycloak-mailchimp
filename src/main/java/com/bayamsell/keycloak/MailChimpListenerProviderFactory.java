@@ -19,7 +19,7 @@ public class MailChimpListenerProviderFactory implements EventListenerProviderFa
 
     static {
         SPI_INFO.put("provider_id", ID);
-        SPI_INFO.put("mailchimp-bys-v", "1.0.2");
+        SPI_INFO.put("mailchimp-bys-v", "1.0.3");
     }
 
     private String API_KEY;
@@ -46,7 +46,7 @@ public class MailChimpListenerProviderFactory implements EventListenerProviderFa
         }
 
         String[] listenedEventLists = config.getArray("LISTENED_EVENT_LIST");
-        if (listenedEventLists != null) {
+        if (listenedEventLists != null && listenedEventLists.length > 0) {
             List<String> listenedEvents = Arrays.asList(listenedEventLists);
             Stream<EventType> eventTypeStream = listenedEvents.stream().map(EventType::valueOf);
             this.listenedEvents = eventTypeStream.collect(Collectors.toList());
