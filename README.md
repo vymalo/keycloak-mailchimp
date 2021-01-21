@@ -1,5 +1,8 @@
 # Keycloak Mailchimp
 
+As we're working with Keycloak, keep in mind that events managed by 
+Keycloak are enum imported from `org.keycloak.events.EventType`.
+
 ## Manual config
 A. First way
 
@@ -10,6 +13,7 @@ A. First way
             <properties>
                 <property name="API_KEY" value="api-key"/>
                 <property name="LIST_ID" value="api-value"/>
+                <!-- (optionally: list of events) <property name="LISTENED_EVENT_LIST" value="LOGIN,REGISTER,LOGOUT"/> -->
             </properties>
         </provider>
     </spi>
@@ -50,6 +54,7 @@ services:
       KEYCLOAK_PASSWORD: password
       MAILCHIMP_API_KEY: one
       MAILCHIMP_LIST_ID: two
+      # MAILCHIMP_LISTENED_EVENT_LIST: LOGIN,REGISTER # optional <--
 ```
 
 Here you could simply build using
