@@ -34,12 +34,19 @@ public class MailChimpConfigServiceImpl implements MailChimpConfigService {
 
     @Override
     public MailChimpConfig getForRealm() {
+        try {
+            return new MailChimpConfig(findOne());
+        } catch (NoResultException e) {
+            return null;
+        }
+    }
+
+    private MailChimpConfigModel findOne() {
         TypedQuery<MailChimpConfigModel> namedQuery = getEntityManager()
                 .createNamedQuery("findByRealm", MailChimpConfigModel.class)
                 .setParameter("realmId", getRealm().getId());
         try {
-            MailChimpConfigModel singleResult = namedQuery.getSingleResult();
-            return new MailChimpConfig(singleResult);
+            return namedQuery.getSingleResult();
         } catch (NoResultException e) {
             return null;
         }
@@ -48,6 +55,18 @@ public class MailChimpConfigServiceImpl implements MailChimpConfigService {
     @Override
     public MailChimpConfig addConfig(MailChimpConfig config) {
         MailChimpConfigModel entity = new MailChimpConfigModel();
+        if (config.getId() != null) {
+            var found = findOne();
+            if (found != null) {
+                found.setListId(config.getListId());
+                found.setApiKey(config.getApiKey());
+                found.setListenedEvents(config.getListenedEvents());
+
+                getEntityManager().persist(found);
+                return config;
+            }
+        }
+
         String id = config.getId() == null ? KeycloakModelUtils.generateId() : config.getId();
         entity.setId(id);
         entity.setRealmId(getRealm().getId());

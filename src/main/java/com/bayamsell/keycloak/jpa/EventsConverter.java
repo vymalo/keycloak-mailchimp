@@ -1,5 +1,6 @@
 package com.bayamsell.keycloak.jpa;
 
+import org.apache.commons.lang3.StringUtils;
 import org.keycloak.events.EventType;
 
 import javax.persistence.AttributeConverter;
@@ -27,7 +28,7 @@ public class EventsConverter
 
     @Override
     public Collection<EventType> convertToEntityAttribute(String string) {
-        if (string != null) {
+        if (StringUtils.isNotEmpty(string)) {
             return Arrays.stream(string.split(SPLIT_CHAR)).map(EventType::valueOf).collect(Collectors.toList());
         }
         return emptyList();

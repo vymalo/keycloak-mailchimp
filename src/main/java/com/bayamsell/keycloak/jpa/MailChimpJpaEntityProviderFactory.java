@@ -10,7 +10,8 @@ import org.keycloak.provider.ServerInfoAwareProviderFactory;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class MailChimpJpaEntityProviderFactory implements JpaEntityProviderFactory, ServerInfoAwareProviderFactory {
+public class MailChimpJpaEntityProviderFactory
+        implements JpaEntityProviderFactory, ServerInfoAwareProviderFactory {
 
     public static final String ID = "mailchimp-jpa";
     private static final LinkedHashMap<String, String> SPI_INFO = new LinkedHashMap<>();

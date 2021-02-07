@@ -13,13 +13,13 @@
             </column>
 
             <column name="API_KEY" type="VARCHAR(60)">
-                <constraints nullable="false"/>
+                <constraints nullable="true"/>
             </column>
             <column name="LIST_ID" type="VARCHAR(200)">
-                <constraints nullable="false"/>
+                <constraints nullable="true"/>
             </column>
             <column name="LISTENED_EVENTS" type="TEXT">
-                <constraints nullable="false"/>
+                <constraints nullable="true"/>
             </column>
         </createTable>
 

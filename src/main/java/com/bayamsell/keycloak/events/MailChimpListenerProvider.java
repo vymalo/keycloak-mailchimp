@@ -3,7 +3,9 @@ package com.bayamsell.keycloak.events;
 import com.bayamsell.keycloak.mailchimp.MailChimpConfig;
 import com.bayamsell.keycloak.mailchimp.MailChimpConfigService;
 import com.github.alexanderwe.bananaj.connection.MailChimpConnection;
-import com.github.alexanderwe.bananaj.model.list.member.*;
+import com.github.alexanderwe.bananaj.model.list.member.EmailType;
+import com.github.alexanderwe.bananaj.model.list.member.Member;
+import com.github.alexanderwe.bananaj.model.list.member.MemberStatus;
 import org.keycloak.events.Event;
 import org.keycloak.events.EventListenerProvider;
 import org.keycloak.events.EventType;
@@ -32,15 +34,22 @@ public class MailChimpListenerProvider implements EventListenerProvider {
         var found = service.getForRealm();
         if (found == null) {
             var config = new MailChimpConfig();
-            config.setListId("changeMe");
-            config.setApiKey("changeMe-yep");
-            config.setListenedEvents(List.of(EventType.LOGIN, EventType.LOGOUT, EventType.REGISTER));
             found = service.addConfig(config);
         }
 
-        con = new MailChimpConnection(found.getApiKey());
-        listenedEvents = found.getListenedEvents();
-        listId = found.getListId();
+        if (found.getApiKey() != null && found.getListId() != null) {
+            con = new MailChimpConnection(found.getApiKey());
+            listenedEvents = found.getListenedEvents();
+            listId = found.getListId();
+        } else {
+            con = null;
+            listenedEvents = Collections.emptyList();
+            listId = null;
+        }
+    }
+
+    private boolean canRegister() {
+        return this.con != null && this.listId != null;
     }
 
     private MailChimpConfigService getService() {
@@ -49,6 +58,10 @@ public class MailChimpListenerProvider implements EventListenerProvider {
 
     @Override
     public void onEvent(Event event) {
+        if (!canRegister()) {
+            return;
+        }
+
         for (EventType listenedEvent : listenedEvents) {
             if (event.getType().equals(listenedEvent)) {
                 KeycloakContext context = keycloakSession.getContext();
@@ -118,6 +131,10 @@ public class MailChimpListenerProvider implements EventListenerProvider {
 
     @Override
     public void onEvent(AdminEvent adminEvent, boolean b) {
+        if (!canRegister()) {
+            return;
+        }
+        // TODO SSE
     }
 
     @Override
