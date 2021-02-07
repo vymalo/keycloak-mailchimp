@@ -1,10 +1,9 @@
-package com.bayamsell.keycloak;
+package com.bayamsell.keycloak.events;
 
+import com.bayamsell.keycloak.mailchimp.MailChimpConfig;
+import com.bayamsell.keycloak.mailchimp.MailChimpConfigService;
 import com.github.alexanderwe.bananaj.connection.MailChimpConnection;
-import com.github.alexanderwe.bananaj.model.list.MailChimpList;
-import com.github.alexanderwe.bananaj.model.list.member.EmailType;
-import com.github.alexanderwe.bananaj.model.list.member.Member;
-import com.github.alexanderwe.bananaj.model.list.member.MemberStatus;
+import com.github.alexanderwe.bananaj.model.list.member.*;
 import org.keycloak.events.Event;
 import org.keycloak.events.EventListenerProvider;
 import org.keycloak.events.EventType;
@@ -26,14 +25,26 @@ public class MailChimpListenerProvider implements EventListenerProvider {
     private final Collection<EventType> listenedEvents;
     private final KeycloakSession keycloakSession;
 
-    public MailChimpListenerProvider(String apiKey,
-                                     String listId,
-                                     Collection<EventType> listenedEvents,
-                                     KeycloakSession keycloakSession) {
-        this.con = new MailChimpConnection(apiKey);
-        this.listenedEvents = listenedEvents;
-        this.listId = listId;
+    public MailChimpListenerProvider(KeycloakSession keycloakSession) {
         this.keycloakSession = keycloakSession;
+
+        var service = getService();
+        var found = service.getForRealm();
+        if (found == null) {
+            var config = new MailChimpConfig();
+            config.setListId("changeMe");
+            config.setApiKey("changeMe-yep");
+            config.setListenedEvents(List.of(EventType.LOGIN, EventType.LOGOUT, EventType.REGISTER));
+            found = service.addConfig(config);
+        }
+
+        con = new MailChimpConnection(found.getApiKey());
+        listenedEvents = found.getListenedEvents();
+        listId = found.getListId();
+    }
+
+    private MailChimpConfigService getService() {
+        return keycloakSession.getProvider(MailChimpConfigService.class);
     }
 
     @Override
@@ -53,7 +64,7 @@ public class MailChimpListenerProvider implements EventListenerProvider {
     }
 
     private void registerUser(UserModel userModel, String ipAddress) throws Exception {
-        MailChimpList mainList = con.getList(listId);
+        var mainList = con.getList(listId);
 
         List<String> phone = userModel.getAttribute("phoneNumber");
         String phoneNumber = phone != null && phone.size() > 0 ? phone.get(0) : null;
@@ -80,7 +91,7 @@ public class MailChimpListenerProvider implements EventListenerProvider {
         LocalDateTime timeStamp = LocalDateTime.now();
         HashMap<String, Boolean> memberInterest = new HashMap<>();
 
-        Member member = new Member.Builder()
+        var member = new Member.Builder()
                 .emailAddress(userModel.getEmail())
                 .language(language)
                 .list(mainList)

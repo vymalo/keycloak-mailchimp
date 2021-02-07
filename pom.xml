@@ -11,6 +11,7 @@
     <properties>
         <java.version>11</java.version>
         <keycloak.version>12.0.1</keycloak.version>
+        <lombock.version>1.18.10</lombock.version>
     </properties>
 
     <dependencyManagement>
@@ -21,6 +22,14 @@
                 <version>${keycloak.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+
+            <!-- lombok -->
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombock.version}</version>
+                <scope>provided</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -47,6 +56,24 @@
         </dependency>
 
         <dependency>
+            <groupId>org.keycloak</groupId>
+            <artifactId>keycloak-model-jpa</artifactId>
+        </dependency>
+
+        <!-- lombok -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20180130</version>
+        </dependency>
+
+        <dependency>
             <groupId>com.github.banana-j</groupId>
             <artifactId>bananaj</artifactId>
             <version>0.6.3</version>
@@ -55,6 +82,12 @@
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
             <version>1.2.17</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.validation</groupId>
+            <artifactId>jakarta.validation-api</artifactId>
+            <version>2.0.2</version>
             <scope>runtime</scope>
         </dependency>
 
@@ -84,39 +117,29 @@
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-ear-plugin</artifactId>
-                <version>3.0.1</version>
-                <configuration>
-                    <defaultLibBundleDir>lib</defaultLibBundleDir>
-                    <outputFileNameMapping>@{artifactId}@.@{extension}@</outputFileNameMapping>
-                </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.wildfly.plugins</groupId>
-                <artifactId>wildfly-maven-plugin</artifactId>
-                <version>2.0.1.Final</version>
-            </plugin>
-
-            <!-- Maven Assembly Plugin -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <version>3.1.1</version>
-                <configuration>
-                    <!-- get all project dependencies -->
-                    <descriptorRefs>
-                        <descriptorRef>jar-with-dependencies</descriptorRef>
-                    </descriptorRefs>
-                </configuration>
+                <artifactId>maven-shade-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>make-assembly</id>
-                        <!-- bind to the packaging phase -->
                         <phase>package</phase>
                         <goals>
-                            <goal>single</goal>
+                            <goal>shade</goal>
                         </goals>
+                        <configuration>
+                            <artifactSet>
+                                <includes>
+                                    <include>com.github.banana-j:bananaj</include>
+                                    <include>org.apache.httpcomponents:httpclient</include>
+                                    <include>commons-codec:commons-codec</include>
+                                    <include>net.sourceforge.jexcelapi:jxl</include>
+                                    <include>commons-lang:commons-lang</include>
+                                    <include>org.json:json</include>
+                                    <include>org.hibernate:hibernate-core</include>
+                                    <include>log4j:log4j</include>
+                                    <include>jakarta.persistence:jakarta.persistence-api</include>
+                                    <include>jakarta.validation:jakarta.validation-api</include>
+                                </includes>
+                            </artifactSet>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>

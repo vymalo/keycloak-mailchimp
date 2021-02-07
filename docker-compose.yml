@@ -11,6 +11,4 @@ services:
     environment:
       KEYCLOAK_USER: admin
       KEYCLOAK_PASSWORD: password
-      MAILCHIMP_API_KEY: one-second
-      MAILCHIMP_LIST_ID: two
-      MAILCHIMP_LISTENED_EVENT_LIST: LOGIN,REGISTER,CLIENT_LOGIN
+

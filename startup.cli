@@ -1,7 +1,0 @@
-embed-server --std-out=echo --server-config=standalone-ha.xml
-/subsystem=keycloak-server/spi=eventsListener/:add
-/subsystem=keycloak-server/spi=eventsListener/provider=mailchimp/:add(enabled=true)
-/subsystem=keycloak-server/spi=eventsListener/provider=mailchimp:write-attribute(name=properties.API_KEY,value="SOME_API_KEY")
-/subsystem=keycloak-server/spi=eventsListener/provider=mailchimp:write-attribute(name=properties.LIST_ID,value="SOME_LIST_ID")
-/subsystem=keycloak-server/spi=eventsListener/provider=mailchimp:write-attribute(name=properties.LISTENED_EVENT_LIST,value=[LOGIN,REGISTER,LOGOUT])
-stop-embedded-server

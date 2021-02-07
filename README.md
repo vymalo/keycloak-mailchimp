@@ -9,7 +9,7 @@ A. First way
 1. Add this inside the Keycloak `standalone*.xml` you're using:
     ```xml
     <spi name="eventsListener">
-        <provider name="mailchimp" enabled="true">
+        <provider name="mailchimp-events" enabled="true">
             <properties>
                 <property name="API_KEY" value="api-key"/>
                 <property name="LIST_ID" value="api-value"/>
@@ -25,10 +25,7 @@ A. First way
 
 B. Second way
 
-1. Run this script `startup.cli`. When doing this, replace `SOME_API_KEY` and `SOME_LIST_ID`
-   by your own data.
-
-2. Now, add `target/*.jar` files into `providers` folder of your keycloak.
+1. Now, add `target/*.jar` files into `providers` folder of your keycloak.
 
 3. Then start.
 
@@ -77,18 +74,6 @@ docker-compose up -d
    ```bash
   docker run --rm -e MAILCHIMP_API_KEY=one -e MAILCHIMP_LIST_ID=two -p 8080:8080 bayamsell/mailchimp
    ```
-  
-### Scripts
-
-If your configuration is better adapted to `scripts`, take a look at
-[startup.cli](./startup.cli) and [startup.sh](./startup.sh).
-To use the fist file, you'll need to update the values
-`SOME_API_KEY` and `SOME_LIST_ID` corresponding to `API_KEY` and `LIST_ID`
-
-```bash
-/subsystem=keycloak-server/spi=eventsListener/provider=mailchimp:write-attribute(name=properties.API_KEY,value="SOME_API_KEY")
-/subsystem=keycloak-server/spi=eventsListener/provider=mailchimp:write-attribute(name=properties.LIST_ID,value="SOME_LIST_ID")
-```
 
 ## Links
 
