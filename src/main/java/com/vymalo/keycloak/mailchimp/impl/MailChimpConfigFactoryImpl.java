@@ -1,29 +1,27 @@
-package com.bayamsell.keycloak.rest;
+package com.vymalo.keycloak.mailchimp.impl;
 
+import com.vymalo.keycloak.mailchimp.MailChimpConfigFactory;
+import com.vymalo.keycloak.mailchimp.MailChimpConfigService;
 import org.keycloak.Config;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.KeycloakSessionFactory;
-import org.keycloak.provider.ServerInfoAwareProviderFactory;
-import org.keycloak.services.resource.RealmResourceProvider;
-import org.keycloak.services.resource.RealmResourceProviderFactory;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class MailChimpResourceProviderFactory
-        implements RealmResourceProviderFactory, ServerInfoAwareProviderFactory {
+public class MailChimpConfigFactoryImpl implements MailChimpConfigFactory {
 
-    private static final String ID = "mailchimp-resource";
+    public static final String ID = "mailchimp-config-impl";
     private static final LinkedHashMap<String, String> SPI_INFO = new LinkedHashMap<>();
 
     static {
         SPI_INFO.put("provider_id", ID);
-        SPI_INFO.put(ID, "1.0.0");
+        SPI_INFO.put(ID, "1.1.0");
     }
 
     @Override
-    public RealmResourceProvider create(KeycloakSession session) {
-        return new MailChimpResourceProvider(session);
+    public MailChimpConfigService create(KeycloakSession session) {
+        return new MailChimpConfigServiceImpl(session);
     }
 
     @Override

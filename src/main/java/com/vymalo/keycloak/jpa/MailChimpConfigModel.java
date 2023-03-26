@@ -1,4 +1,4 @@
-package com.bayamsell.keycloak.jpa;
+package com.vymalo.keycloak.jpa;
 
 import lombok.Data;
 import org.keycloak.events.EventType;

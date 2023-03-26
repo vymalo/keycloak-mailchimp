@@ -1,27 +1,29 @@
-package com.bayamsell.keycloak.mailchimp.impl;
+package com.vymalo.keycloak.jpa;
 
-import com.bayamsell.keycloak.mailchimp.MailChimpConfigFactory;
-import com.bayamsell.keycloak.mailchimp.MailChimpConfigService;
 import org.keycloak.Config;
+import org.keycloak.connections.jpa.entityprovider.JpaEntityProvider;
+import org.keycloak.connections.jpa.entityprovider.JpaEntityProviderFactory;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.KeycloakSessionFactory;
+import org.keycloak.provider.ServerInfoAwareProviderFactory;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class MailChimpConfigFactoryImpl implements MailChimpConfigFactory {
+public class MailChimpJpaEntityProviderFactory
+        implements JpaEntityProviderFactory, ServerInfoAwareProviderFactory {
 
-    public static final String ID = "mailchimp-config-impl";
+    public static final String ID = "mailchimp-jpa";
     private static final LinkedHashMap<String, String> SPI_INFO = new LinkedHashMap<>();
 
     static {
         SPI_INFO.put("provider_id", ID);
-        SPI_INFO.put(ID, "1.0.0");
+        SPI_INFO.put(ID, "1.1.0");
     }
 
     @Override
-    public MailChimpConfigService create(KeycloakSession session) {
-        return new MailChimpConfigServiceImpl(session);
+    public JpaEntityProvider create(KeycloakSession session) {
+        return new MailChimpJpaEntityProvider();
     }
 
     @Override

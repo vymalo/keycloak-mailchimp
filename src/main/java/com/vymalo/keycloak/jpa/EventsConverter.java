@@ -1,4 +1,4 @@
-package com.bayamsell.keycloak.jpa;
+package com.vymalo.keycloak.jpa;
 
 import org.apache.commons.lang3.StringUtils;
 import org.keycloak.events.EventType;

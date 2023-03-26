@@ -1,4 +1,4 @@
-package com.bayamsell.keycloak.rest;
+package com.vymalo.keycloak.rest;
 
 import lombok.RequiredArgsConstructor;
 import org.keycloak.models.KeycloakSession;

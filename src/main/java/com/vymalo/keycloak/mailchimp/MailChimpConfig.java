@@ -1,6 +1,6 @@
-package com.bayamsell.keycloak.mailchimp;
+package com.vymalo.keycloak.mailchimp;
 
-import com.bayamsell.keycloak.jpa.MailChimpConfigModel;
+import com.vymalo.keycloak.jpa.MailChimpConfigModel;
 import lombok.Data;
 import org.keycloak.events.EventType;
 

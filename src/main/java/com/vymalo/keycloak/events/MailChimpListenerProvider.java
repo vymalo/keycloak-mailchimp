@@ -1,7 +1,7 @@
-package com.bayamsell.keycloak.events;
+package com.vymalo.keycloak.events;
 
-import com.bayamsell.keycloak.mailchimp.MailChimpConfig;
-import com.bayamsell.keycloak.mailchimp.MailChimpConfigService;
+import com.vymalo.keycloak.mailchimp.MailChimpConfig;
+import com.vymalo.keycloak.mailchimp.MailChimpConfigService;
 import com.github.alexanderwe.bananaj.connection.MailChimpConnection;
 import com.github.alexanderwe.bananaj.model.list.member.EmailType;
 import com.github.alexanderwe.bananaj.model.list.member.Member;
@@ -48,8 +48,8 @@ public class MailChimpListenerProvider implements EventListenerProvider {
         }
     }
 
-    private boolean canRegister() {
-        return this.con != null && this.listId != null;
+    private boolean cannotRegister() {
+        return this.con == null || this.listId == null;
     }
 
     private MailChimpConfigService getService() {
@@ -58,7 +58,7 @@ public class MailChimpListenerProvider implements EventListenerProvider {
 
     @Override
     public void onEvent(Event event) {
-        if (!canRegister()) {
+        if (cannotRegister()) {
             return;
         }
 
@@ -78,17 +78,18 @@ public class MailChimpListenerProvider implements EventListenerProvider {
 
     private void registerUser(UserModel userModel, String ipAddress) throws Exception {
         var mainList = con.getList(listId);
+        var attributes = userModel.getAttributes();
 
-        List<String> phone = userModel.getAttribute("phoneNumber");
+        List<String> phone = attributes.get("phoneNumber");
         String phoneNumber = phone != null && phone.size() > 0 ? phone.get(0) : null;
 
-        List<String> locale = userModel.getAttribute("locale");
+        List<String> locale = attributes.get("locale");
         String language = locale != null && locale.size() > 0 ? locale.get(0) : null;
 
-        List<String> photoUrl = userModel.getAttribute("photoUrl");
+        List<String> photoUrl = attributes.get("photoUrl");
         String avatarUrl = photoUrl != null && photoUrl.size() > 0 ? photoUrl.get(0) : null;
 
-        List<String> birthdayList = userModel.getAttribute("birthday");
+        List<String> birthdayList = attributes.get("birthday");
         String birthday = birthdayList != null && birthdayList.size() > 0 ? birthdayList.get(0) : null;
 
         Map<String, Object> mergeFields = new HashMap<String, Object>();
@@ -131,7 +132,7 @@ public class MailChimpListenerProvider implements EventListenerProvider {
 
     @Override
     public void onEvent(AdminEvent adminEvent, boolean b) {
-        if (!canRegister()) {
+        if (cannotRegister()) {
             return;
         }
         // TODO SSE

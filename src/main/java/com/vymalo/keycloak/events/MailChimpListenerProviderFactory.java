@@ -1,8 +1,7 @@
-package com.bayamsell.keycloak.jpa;
+package com.vymalo.keycloak.events;
 
 import org.keycloak.Config;
-import org.keycloak.connections.jpa.entityprovider.JpaEntityProvider;
-import org.keycloak.connections.jpa.entityprovider.JpaEntityProviderFactory;
+import org.keycloak.events.EventListenerProviderFactory;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.KeycloakSessionFactory;
 import org.keycloak.provider.ServerInfoAwareProviderFactory;
@@ -10,35 +9,31 @@ import org.keycloak.provider.ServerInfoAwareProviderFactory;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class MailChimpJpaEntityProviderFactory
-        implements JpaEntityProviderFactory, ServerInfoAwareProviderFactory {
+public class MailChimpListenerProviderFactory implements EventListenerProviderFactory, ServerInfoAwareProviderFactory {
 
-    public static final String ID = "mailchimp-jpa";
+    private static final String ID = "mailchimp-events";
     private static final LinkedHashMap<String, String> SPI_INFO = new LinkedHashMap<>();
 
     static {
         SPI_INFO.put("provider_id", ID);
-        SPI_INFO.put(ID, "1.0.0");
+        SPI_INFO.put(ID, "1.1.0");
     }
 
     @Override
-    public JpaEntityProvider create(KeycloakSession session) {
-        return new MailChimpJpaEntityProvider();
+    public MailChimpListenerProvider create(KeycloakSession keycloakSession) {
+        return new MailChimpListenerProvider(keycloakSession);
     }
 
     @Override
     public void init(Config.Scope config) {
-
     }
 
     @Override
-    public void postInit(KeycloakSessionFactory factory) {
-
+    public void postInit(KeycloakSessionFactory keycloakSessionFactory) {
     }
 
     @Override
     public void close() {
-
     }
 
     @Override

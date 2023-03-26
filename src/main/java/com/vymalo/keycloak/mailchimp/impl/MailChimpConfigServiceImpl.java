@@ -1,8 +1,8 @@
-package com.bayamsell.keycloak.mailchimp.impl;
+package com.vymalo.keycloak.mailchimp.impl;
 
-import com.bayamsell.keycloak.jpa.MailChimpConfigModel;
-import com.bayamsell.keycloak.mailchimp.MailChimpConfig;
-import com.bayamsell.keycloak.mailchimp.MailChimpConfigService;
+import com.vymalo.keycloak.jpa.MailChimpConfigModel;
+import com.vymalo.keycloak.mailchimp.MailChimpConfig;
+import com.vymalo.keycloak.mailchimp.MailChimpConfigService;
 import org.keycloak.connections.jpa.JpaConnectionProvider;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.RealmModel;

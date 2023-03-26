@@ -1,4 +1,4 @@
-package com.bayamsell.keycloak.jpa;
+package com.vymalo.keycloak.jpa;
 
 import org.keycloak.connections.jpa.entityprovider.JpaEntityProvider;
 

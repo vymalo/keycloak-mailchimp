@@ -1,4 +1,4 @@
-package com.bayamsell.keycloak.mailchimp;
+package com.vymalo.keycloak.mailchimp;
 
 import org.keycloak.provider.ProviderFactory;
 import org.keycloak.provider.ServerInfoAwareProviderFactory;

@@ -1,7 +1,7 @@
-package com.bayamsell.keycloak.rest;
+package com.vymalo.keycloak.rest;
 
-import com.bayamsell.keycloak.mailchimp.MailChimpConfig;
-import com.bayamsell.keycloak.mailchimp.MailChimpConfigService;
+import com.vymalo.keycloak.mailchimp.MailChimpConfig;
+import com.vymalo.keycloak.mailchimp.MailChimpConfigService;
 import org.jboss.resteasy.annotations.cache.NoCache;
 import org.keycloak.models.KeycloakSession;
 

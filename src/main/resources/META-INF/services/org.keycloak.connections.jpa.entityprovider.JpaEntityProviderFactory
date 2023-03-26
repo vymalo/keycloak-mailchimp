@@ -1,1 +1,1 @@
-com.bayamsell.keycloak.jpa.MailChimpJpaEntityProviderFactory
+com.vymalo.keycloak.jpa.MailChimpJpaEntityProviderFactory

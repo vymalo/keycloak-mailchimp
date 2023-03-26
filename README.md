@@ -68,11 +68,11 @@ docker-compose up -d
 
 - First build
    ```bash
-   docker build -t bayamsell/mailchimp .
+   docker build -t vymalo/mailchimp .
    ```
 - Then run
    ```bash
-  docker run --rm -e MAILCHIMP_API_KEY=one -e MAILCHIMP_LIST_ID=two -p 8080:8080 bayamsell/mailchimp
+  docker run --rm -e MAILCHIMP_API_KEY=one -e MAILCHIMP_LIST_ID=two -p 8080:8080 vymalo/mailchimp
    ```
 
 ## Links
