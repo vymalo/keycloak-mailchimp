@@ -1,85 +1,39 @@
 # Keycloak Mailchimp
 
-As we're working with Keycloak, keep in mind that events managed by 
-Keycloak are enum imported from `org.keycloak.events.EventType`.
+## ⚠️ Depreciation notice ⚠️
+![img.png](img.png)
 
-## Manual config
-A. First way
+I'm not working on this plugin anymore, because I think, given the direction Keycloak is taking, it would be better to have this functionality as an external service, outside Keycloak.
 
-1. Add this inside the Keycloak `standalone*.xml` you're using:
-    ```xml
-    <spi name="eventsListener">
-        <provider name="mailchimp-events" enabled="true">
-            <properties>
-                <property name="API_KEY" value="api-key"/>
-                <property name="LIST_ID" value="api-value"/>
-                <!-- (optionally: list of events) <property name="LISTENED_EVENT_LIST" value="[&quot;LOGIN&quot;,&quot;REGISTER&quot;,&quot;LOGOUT&quot;]"/> -->
-            </properties>
-        </provider>
-    </spi>
-    ```
+I suggest using a plugin like [this](https://github.com/jessylenne/keycloak-event-listener-http) or [this other](https://github.com/softwarefactory-project/keycloak-event-listener-mqtt) to send events to that other service, which would handle things better.
 
-2. Now, add `target/*.jar` files into `providers` folder of your keycloak.
+## Usage
 
-3. Then start.
+After installing the plugin, it should normally create an endpoint __UNPROTECTED__ at `<keycloak-server-url>:<port>/realms/<realm>/mailchimp-resource/config`. You can call it to get the current mailchimp configuration.
 
-B. Second way
+Because it is not protected, you can POST EndPoint to create a new configuration for mailchimp to send a request. Then configure the plugin on the administration page. Example:
 
-1. Now, add `target/*.jar` files into `providers` folder of your keycloak.
-
-3. Then start.
-
-## Auto config
-
-### Docker
-
-Simply use this preconfigured [docker-compose.yml](./docker-compose.yml), which will use the [Dockerfile](./Dockerfile).
-You need to provide `MAILCHIMP_API_KEY` and `MAILCHIMP_LIST_ID` as environment variable.
-
-1. docker-compose.yml: An example is the following
-```yaml
-version: "3.8"
-
-services:
-
-  keycloak:
-    build: .
-    ports:
-      - 8080:8080
-    environment:
-      KEYCLOAK_USER: admin
-      KEYCLOAK_PASSWORD: password
-      MAILCHIMP_API_KEY: one
-      MAILCHIMP_LIST_ID: two
-      # MAILCHIMP_LISTENED_EVENT_LIST: LOGIN,REGISTER # optional <--
+```json
+{
+    "apiKey": "mailchimp-api-key",
+    "listId": "mailchimp-list-id",
+    "listenedEvents": [
+      "LOGIN", "REGISTER"
+    ]
+}
 ```
+As we are working with Keycloak, keep in mind that the events handled by Keycloak are enums imported from `org.keycloak.events.EventType`.
 
-Here you could simply build using
-```bash
-docker-compose build
-```
+You will then have a configuration for a specific domain. That's it. The rest is under the hood.
 
-and then launch using
-```
-docker-compose up -d
-```
+## Under the hood
 
-2. Dockerfile: Dockerfile
+1. Event Listener Provider
+2. JPA entity provider
+3. Resource provider
 
-- First build
-   ```bash
-   docker build -t bayamsell/mailchimp .
-   ```
-- Then run
-   ```bash
-  docker run --rm -e MAILCHIMP_API_KEY=one -e MAILCHIMP_LIST_ID=two -p 8080:8080 bayamsell/mailchimp
-   ```
+These providers are used to keep the plugin configuration running.
 
 ## Links
 
-- https://access.redhat.com/documentation/en-us/red_hat_jboss_enterprise_application_platform/7.0/html/management_cli_guide/running_embedded_server
-- https://stackoverflow.com/a/58144078/7748446
-- https://askubuntu.com/a/229592/771659
-- https://docs.wildfly.org/18/Admin_Guide.html
-- https://www.keycloak.org/docs/latest/server_installation/#cli-scripting
-- https://stackoverflow.com/a/23702185/7748446
+- https://github.com/p2-inc/keycloak-events
