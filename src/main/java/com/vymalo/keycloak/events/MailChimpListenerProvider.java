@@ -1,24 +1,27 @@
 package com.vymalo.keycloak.events;
 
-import com.vymalo.keycloak.mailchimp.MailChimpConfig;
-import com.vymalo.keycloak.mailchimp.MailChimpConfigService;
 import com.github.alexanderwe.bananaj.connection.MailChimpConnection;
 import com.github.alexanderwe.bananaj.model.list.member.EmailType;
 import com.github.alexanderwe.bananaj.model.list.member.Member;
 import com.github.alexanderwe.bananaj.model.list.member.MemberStatus;
+import com.vymalo.keycloak.mailchimp.MailChimpConfig;
+import com.vymalo.keycloak.mailchimp.MailChimpConfigService;
 import org.keycloak.events.Event;
 import org.keycloak.events.EventListenerProvider;
 import org.keycloak.events.EventType;
 import org.keycloak.events.admin.AdminEvent;
-import org.keycloak.models.KeycloakContext;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.UserModel;
-import org.keycloak.sessions.AuthenticationSessionModel;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 
 public class MailChimpListenerProvider implements EventListenerProvider {
 
@@ -64,11 +67,16 @@ public class MailChimpListenerProvider implements EventListenerProvider {
 
         for (EventType listenedEvent : listenedEvents) {
             if (event.getType().equals(listenedEvent)) {
-                KeycloakContext context = keycloakSession.getContext();
-                AuthenticationSessionModel authenticationSession = context.getAuthenticationSession();
-                UserModel authenticatedUser = authenticationSession.getAuthenticatedUser();
+                final var context = keycloakSession.getContext();
+                final var authenticationSession = context.getAuthenticationSession();
+                final var authenticatedUser = authenticationSession.getAuthenticatedUser();
+
                 try {
-                    registerUser(authenticatedUser, event.getIpAddress());
+                    if (listenedEvent == EventType.DELETE_ACCOUNT) {
+                        deregisterUser(authenticatedUser);
+                    } else {
+                        registerUser(authenticatedUser, event.getIpAddress());
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -76,23 +84,33 @@ public class MailChimpListenerProvider implements EventListenerProvider {
         }
     }
 
+    private void deregisterUser(UserModel userModel) throws Exception {
+        final var mainList = con.getList(listId);
+        final var byteOfMessage = userModel.getEmail().getBytes(StandardCharsets.UTF_8);
+        final var md5 = MessageDigest.getInstance("MD5");
+        final var digest = md5.digest(byteOfMessage);
+
+        final var member = mainList.getMember(new String(digest));
+        mainList.deleteMemberFromList(member.getId());
+    }
+
     private void registerUser(UserModel userModel, String ipAddress) throws Exception {
         var mainList = con.getList(listId);
         var attributes = userModel.getAttributes();
 
         List<String> phone = attributes.get("phoneNumber");
-        String phoneNumber = phone != null && phone.size() > 0 ? phone.get(0) : null;
+        final var phoneNumber = phone != null && phone.size() > 0 ? phone.get(0) : null;
 
         List<String> locale = attributes.get("locale");
-        String language = locale != null && locale.size() > 0 ? locale.get(0) : null;
+        final var language = locale != null && locale.size() > 0 ? locale.get(0) : null;
 
         List<String> photoUrl = attributes.get("photoUrl");
-        String avatarUrl = photoUrl != null && photoUrl.size() > 0 ? photoUrl.get(0) : null;
+        final var avatarUrl = photoUrl != null && photoUrl.size() > 0 ? photoUrl.get(0) : null;
 
         List<String> birthdayList = attributes.get("birthday");
-        String birthday = birthdayList != null && birthdayList.size() > 0 ? birthdayList.get(0) : null;
+        final var birthday = birthdayList != null && birthdayList.size() > 0 ? birthdayList.get(0) : null;
 
-        Map<String, Object> mergeFields = new HashMap<String, Object>();
+        final var mergeFields = new HashMap<String, Object>();
         mergeFields.put("FNAME", userModel.getFirstName());
         mergeFields.put("LNAME", userModel.getLastName());
         mergeFields.put("PHONE", phoneNumber);
@@ -125,15 +143,17 @@ public class MailChimpListenerProvider implements EventListenerProvider {
 
     private String birthday(String birthday) throws ParseException {
         if (birthday == null) return null;
-        Date date = new SimpleDateFormat("dd/MM/yyyy").parse(birthday);
+
+        final var date = new SimpleDateFormat("dd/MM/yyyy").parse(birthday);
+
         if (date == null) return null;
+
         return String.format("%d/%d", date.getMonth() + 1, date.getDate());
     }
 
     @Override
     public void onEvent(AdminEvent adminEvent, boolean b) {
         if (cannotRegister()) {
-            return;
         }
         // TODO SSE
     }
