@@ -11,7 +11,7 @@
     <properties>
         <java.version>11</java.version>
         <keycloak.version>21.0.0</keycloak.version>
-        <lombock.version>1.18.26</lombock.version>
+        <lombock.version>1.18.28</lombock.version>
     </properties>
 
     <dependencyManagement>
